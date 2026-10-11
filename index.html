@@ -156,16 +156,6 @@
   }
   .hero .emoji-row { font-size: 2rem; margin-top: 22px; letter-spacing: 10px; animation: bob 2s ease-in-out infinite; }
 
-  .scroll-hint {
-    margin-top: 46px;
-    font-size: 1.4rem;
-    animation: bounceDown 1.6s ease-in-out infinite;
-  }
-  @keyframes bounceDown {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(12px); }
-  }
-
   /* floating hearts inside hero */
   .hearts {
     position: absolute;
@@ -901,6 +891,87 @@
   }
   .expired-date { font-weight: 700; color: var(--pink-5); }
 
+  /* ============ STEP NAV (next / back pill) ============ */
+  #stepNav {
+    position: fixed;
+    left: 50%;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 55;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    background: rgba(255,255,255,.86);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,.95);
+    border-radius: 999px;
+    box-shadow: 0 12px 30px rgba(232,67,126,.32);
+  }
+  .step-dots { display: flex; gap: 7px; padding: 0 4px; }
+  .step-dots i {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #ffd0e2;
+    transition: transform .25s ease, background .25s ease;
+  }
+  .step-dots i.on { background: var(--pink-5); transform: scale(1.3); }
+  .nav-btn {
+    border: none;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    font-family: inherit;
+    font-weight: 700;
+  }
+  #stepBack {
+    width: 44px; height: 44px; border-radius: 50%;
+    font-size: 1.5rem; line-height: 1;
+    background: #ffe3ee; color: var(--pink-5);
+    visibility: hidden;
+  }
+  #stepBack:active { transform: scale(.92); }
+  .nav-next { padding: 11px 22px; font-size: 1rem; border-radius: 999px; }
+
+  /* ============ FINALE (peach cat, again) ============ */
+  #finale {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 28px 20px;
+    overflow-y: auto;
+    background:
+      radial-gradient(circle at 20% 16%, rgba(255,255,255,.9), transparent 45%),
+      radial-gradient(circle at 82% 86%, rgba(255,255,255,.55), transparent 42%),
+      linear-gradient(160deg, #ffe6ef, #ffc9de 55%, #ffe6ef);
+  }
+  .finale-inner { max-width: 520px; width: 100%; animation: finaleIn .55s ease both; }
+  @keyframes finaleIn {
+    from { opacity: 0; transform: translateY(26px) scale(.95); }
+    to   { opacity: 1; transform: none; }
+  }
+  .finale-eyebrow {
+    font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    font-size: .78rem; color: #c76a92;
+  }
+  .finale-cat { margin: 16px auto 2px; transform: rotate(0deg); }
+  .finale-title {
+    font-family: 'Pacifico', cursive; font-weight: 400;
+    font-size: clamp(1.9rem, 8vw, 3.1rem);
+    color: var(--pink-5);
+    margin: 16px 0 10px;
+    filter: drop-shadow(0 4px 12px rgba(232,67,126,.3));
+  }
+  .finale-text {
+    font-size: clamp(1rem, 3.6vw, 1.15rem);
+    color: #a24a70; font-weight: 500;
+    line-height: 1.7; margin-bottom: 24px;
+  }
+
   /* ============ MUSIC BUTTON ============ */
   #musicBtn {
     position: fixed;
@@ -935,11 +1006,16 @@
   .reveal { opacity: 0; transform: translateY(36px); transition: opacity .8s ease, transform .8s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
+  /* ============ STEP PAGES (one section at a time) ============ */
+  .page .step { display: none; }
+  .page .step.active { display: flex; }
+  body.stepper .page .step { padding-bottom: 122px; }   /* room for the next/back nav */
+  body.stepper footer { display: none; }
+
   /* ============ PHONES ============ */
   @media (max-width: 480px) {
     .card { padding: 32px 18px; }
     .hero .emoji-row { letter-spacing: 6px; }
-    .scroll-hint { margin-top: 32px; }
     .cake-title { font-size: 1.55rem; }
     .cake-btns { gap: 10px; }
     .btn { padding: 12px 20px; font-size: 1rem; }
@@ -982,7 +1058,7 @@
   <div class="page">
 
     <!-- ================= HERO ================= -->
-    <section class="hero" id="hero">
+    <section class="hero step" id="hero">
       <div class="hearts" id="heartField"></div>
       <h1>Happy Birthday</h1>
       <div class="name">Anjali</div> <!-- ✏️ edit the name here if needed -->
@@ -995,11 +1071,10 @@
         </div>
       </div>
       <div class="emoji-row">🎂 🎉 🌸 🎁 ✨ 🧁 💖</div>
-      <div class="scroll-hint">👇</div>
     </section>
 
     <!-- ================= CAKE ================= -->
-    <section class="reveal" id="cakeSection">
+    <section class="reveal step" id="cakeSection">
       <div class="card">
         <h2 class="cake-title">Make a Wish, Anjali! 🕯️</h2>
         <p class="cake-sub">Click each candle to blow it out — or hit the big Blow button. (Don't forget to wish!)</p>
@@ -1031,7 +1106,7 @@
     </section>
 
     <!-- ================= MESSAGE ================= -->
-    <section class="reveal" id="messageSection">
+    <section class="reveal step" id="messageSection">
       <div class="card message-card">
         <h2>A little note for you…</h2>
         <!-- ✏️ Edit this message however you like -->
@@ -1047,7 +1122,7 @@
     </section>
 
     <!-- ================= GIFTS ================= -->
-    <section class="reveal" id="giftsSection">
+    <section class="reveal step" id="giftsSection">
       <div class="card wide">
         <h2 class="cake-title">Gift Surprises! 🎁</h2>
         <p class="cake-sub">Tap a gift to open it — there's a surprise inside 🥳</p>
@@ -1086,7 +1161,7 @@
     </section>
 
     <!-- ================= FUN QUESTION (Hinglish prank 😄) ================= -->
-    <section class="reveal" id="quizSection">
+    <section class="reveal step" id="quizSection">
       <h2 class="quiz-title">एक आख़िरी सवाल! 😂</h2>
       <p class="quiz-sub">सच-सच बताना… वरना मुझे पता चल जाएगा 😉</p>
 
@@ -1104,6 +1179,26 @@
   </div>
 
   <button id="musicBtn" aria-label="Toggle music" title="Toggle music">🔊</button>
+
+  <!-- ================= STEP NAV (next / back) ================= -->
+  <nav id="stepNav" class="hidden" aria-label="Page navigation">
+    <button id="stepBack" class="nav-btn" aria-label="Previous page">‹</button>
+    <div id="stepDots" class="step-dots" aria-hidden="true"></div>
+    <button id="stepNext" class="btn nav-next">Next ➡️</button>
+  </nav>
+
+  <!-- ================= FINALE (peach cat, one more time) ================= -->
+  <div id="finale" class="hidden" role="dialog" aria-label="Happy Birthday Anjali">
+    <div class="finale-inner">
+      <p class="finale-eyebrow">and one more time…</p>
+      <div class="hero-cat-frame finale-cat">
+        <img class="hero-cat" src="images/birthday-mochi-mochi-peach-cat-gif.gif" alt="Peach cat dancing with a Happy Birthday banner" width="498" height="453">
+      </div>
+      <h2 class="finale-title">Happy Birthday, Anjali! 🎂</h2>
+      <p class="finale-text">Once again… Happy Birthday to the sweetest person ever 🥳💖</p>
+      <button class="btn" id="finaleClose">Yay! 🎉 Start over</button>
+    </div>
+  </div>
 
 <script>
 /* ============================================================
@@ -1524,6 +1619,7 @@ if (CONFIG.showQuestions && CONFIG.dodgeNoButton) {
       if (dodgeResult) dodgeResult.textContent = 'तो फिर चलो पूरा दिन पार्टी! 🥳🎉';
       confettiBurst(null, null, 160);
       setTimeout(() => confettiBurst(null, null, 120), 400);
+      setTimeout(showFinale, 900);   // → peach cat + "Happy Birthday" one more time 🎂
     });
   }
 }
@@ -1569,6 +1665,87 @@ const io = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.15 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ============================================================
+   STEP PAGES — show one section at a time, drive with Next ➡️
+   ============================================================ */
+if (!IS_EXPIRED) {
+  const steps = Array.from(document.querySelectorAll('.page .step'));
+  const stepNav = document.getElementById('stepNav');
+  const nextBtn = document.getElementById('stepNext');
+  const backBtn = document.getElementById('stepBack');
+  const dotsWrap = document.getElementById('stepDots');
+
+  if (steps.length) {
+    document.body.classList.add('stepper');
+    if (stepNav) stepNav.classList.remove('hidden');
+
+    const dots = steps.map(() => {
+      const d = document.createElement('i');
+      if (dotsWrap) dotsWrap.appendChild(d);
+      return d;
+    });
+
+    let stepIndex = 0;
+    function showStep(i) {
+      stepIndex = Math.max(0, Math.min(steps.length - 1, i));
+      steps.forEach((s, idx) => {
+        const active = idx === stepIndex;
+        s.classList.toggle('active', active);
+        if (active && s.classList.contains('reveal')) {
+          s.classList.remove('visible');     // re-play the fade-in each visit
+          void s.offsetWidth;
+          s.classList.add('visible');
+        }
+      });
+      dots.forEach((d, idx) => d.classList.toggle('on', idx === stepIndex));
+      if (backBtn) backBtn.style.visibility = stepIndex === 0 ? 'hidden' : 'visible';
+      if (nextBtn) nextBtn.classList.toggle('hidden', stepIndex === steps.length - 1);
+      window.scrollTo(0, 0);
+    }
+
+    if (nextBtn) nextBtn.addEventListener('click', () => showStep(stepIndex + 1));
+    if (backBtn) backBtn.addEventListener('click', () => showStep(stepIndex - 1));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' && stepIndex < steps.length - 1) showStep(stepIndex + 1);
+      else if (e.key === 'ArrowLeft') showStep(stepIndex - 1);
+    });
+
+    window.__gotoStep = showStep;   // used by the finale "start over"
+    showStep(0);
+  }
+}
+
+/* ============================================================
+   FINALE — tap Yes → the peach cat says Happy Birthday again 🎂
+   ============================================================ */
+function showFinale() {
+  const finale = document.getElementById('finale');
+  if (!finale) return;
+  finale.classList.remove('hidden');
+  document.body.classList.add('intro-open');   // lock scroll behind the overlay
+  confettiBurst(window.innerWidth * .5, window.innerHeight * .38, 170);
+  setTimeout(() => confettiBurst(window.innerWidth * .28, window.innerHeight * .30, 120), 320);
+  setTimeout(() => confettiBurst(window.innerWidth * .72, window.innerHeight * .30, 120), 620);
+}
+
+(function bindFinale() {
+  const finale = document.getElementById('finale');
+  const closeBtn = document.getElementById('finaleClose');
+  if (!finale || !closeBtn) return;
+  closeBtn.addEventListener('click', () => {
+    finale.classList.add('hidden');
+    document.body.classList.remove('intro-open');
+    // reset the prank so the whole thing can be played again
+    const y = document.getElementById('dodgeYes');
+    const n = document.getElementById('dodgeNo');
+    const r = document.getElementById('dodgeResult');
+    if (y) { y.classList.remove('won'); y.style.transform = ''; }
+    if (n) { n.style.position = ''; n.style.left = ''; n.style.top = ''; n.style.margin = ''; }
+    if (r) r.textContent = '';
+    if (window.__gotoStep) window.__gotoStep(0);
+  });
+})();
 </script>
 </body>
 </html>
