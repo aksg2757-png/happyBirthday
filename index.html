@@ -184,7 +184,7 @@
 
   .cake-scene {
     position: relative;
-    height: 320px;
+    height: 310px;
     width: 300px;
     margin: 0 auto 20px;
     user-select: none;
@@ -197,24 +197,24 @@
     bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 300px;
-    height: 26px;
+    width: 292px;
+    height: 30px;
     border-radius: 50%;
     background: linear-gradient(#fff, #f3ddf3);
-    box-shadow: 0 12px 22px rgba(0,0,0,.15);
+    box-shadow: 0 14px 26px rgba(0,0,0,.15);
     z-index: 3;
   }
 
   .cake-body {
     position: absolute;
-    bottom: 24px;
+    bottom: 26px;
     left: 50%;
     transform: translateX(-50%);
-    width: 216px;
-    height: 170px;
+    width: 256px;
+    height: 196px;
     background: linear-gradient(180deg, #ffb3d3, #ff8fb5);
-    border-radius: 18px 18px 14px 14px;
-    box-shadow: inset 0 -18px 24px rgba(200,40,110,.22);
+    border-radius: 20px 20px 16px 16px;
+    box-shadow: inset 0 -20px 26px rgba(200,40,110,.22);
     z-index: 1;
   }
 
@@ -223,27 +223,27 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 34px;
+    height: 40px;
     background: #fff6fa;
-    border-radius: 18px 18px 6px 6px;
+    border-radius: 20px 20px 8px 8px;
     z-index: 2;
   }
   .frosting::after {
     content: '';
     position: absolute;
-    bottom: -12px;
+    bottom: -14px;
     left: 0;
     width: 100%;
-    height: 14px;
-    background: radial-gradient(circle at 8px 0, #fff6fa 8px, transparent 9px) repeat-x;
-    background-size: 16px 100%;
+    height: 16px;
+    background: radial-gradient(circle at 9px 0, #fff6fa 9px, transparent 10px) repeat-x;
+    background-size: 19px 100%;
   }
 
   .sprinkle {
     position: absolute;
-    width: 7px;
-    height: 4px;
-    border-radius: 3px;
+    width: 9px;
+    height: 5px;
+    border-radius: 4px;
     background: var(--sc, #ffd166);
     transform: rotate(var(--sr, 20deg));
     z-index: 2;
@@ -251,20 +251,20 @@
 
   .candles {
     position: absolute;
-    top: 80px; /* sits exactly on top of the cake body */
+    top: 34px; /* sits exactly on top of the cake body */
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 26px;
+    gap: 30px;
     z-index: 4;
   }
 
   .candle {
     position: relative;
-    width: 14px;
-    height: 46px;
-    border-radius: 4px 4px 3px 3px;
-    background: repeating-linear-gradient(45deg, var(--cc, #ff6fa5) 0 6px, #fff 6px 9px);
+    width: 16px;
+    height: 54px;
+    border-radius: 5px 5px 3px 3px;
+    background: repeating-linear-gradient(45deg, var(--cc, #ff6fa5) 0 7px, #fff 7px 10px);
     cursor: pointer;
     transition: transform .15s ease;
   }
@@ -272,27 +272,27 @@
 
   .wick {
     position: absolute;
-    top: -5px;
+    top: -6px;
     left: 50%;
     transform: translateX(-50%);
     width: 3px;
-    height: 6px;
+    height: 7px;
     background: #5d3a2e;
     border-radius: 2px;
   }
 
   .flame {
     position: absolute;
-    top: -22px;
+    top: -26px;
     left: 50%;
     transform: translateX(-50%);
-    width: 12px;
-    height: 18px;
+    width: 14px;
+    height: 22px;
     background: radial-gradient(circle at 50% 78%, #fff7ae 0 30%, #ffb84d 55%, #ff7b3d 100%);
     border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
     transform-origin: 50% 100%;
     animation: flicker .35s ease-in-out infinite alternate;
-    box-shadow: 0 0 16px 5px rgba(255, 170, 80, .55);
+    box-shadow: 0 0 20px 6px rgba(255, 170, 80, .55);
   }
   @keyframes flicker {
     from { transform: translateX(-50%) scale(1) rotate(-4deg); }
@@ -301,10 +301,10 @@
 
   .smoke {
     position: absolute;
-    top: -26px;
+    top: -28px;
     left: 50%;
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: rgba(160, 160, 170, .45);
     opacity: 0;
@@ -1014,7 +1014,7 @@
 
   /* ============ PHONES ============ */
   @media (max-width: 480px) {
-    .card { padding: 32px 18px; }
+    .card { padding: 26px 14px; }
     .hero .emoji-row { letter-spacing: 6px; }
     .cake-title { font-size: 1.55rem; }
     .cake-btns { gap: 10px; }
@@ -1082,11 +1082,11 @@
         <div class="cake-scene">
           <div class="cake-body">
             <div class="frosting"></div>
-            <span class="sprinkle" style="left:20px; top:44px; --sc:#ff5e97; --sr:24deg;"></span>
-            <span class="sprinkle" style="left:58px; top:66px; --sc:#ffd166; --sr:-18deg;"></span>
-            <span class="sprinkle" style="left:104px; top:40px; --sc:#6ec6ff; --sr:40deg;"></span>
-            <span class="sprinkle" style="left:150px; top:72px; --sc:#7ee081; --sr:-30deg;"></span>
-            <span class="sprinkle" style="left:176px; top:46px; --sc:#ff5e97; --sr:15deg;"></span>
+            <span class="sprinkle" style="left:24px; top:51px; --sc:#ff5e97; --sr:24deg;"></span>
+            <span class="sprinkle" style="left:69px; top:76px; --sc:#ffd166; --sr:-18deg;"></span>
+            <span class="sprinkle" style="left:123px; top:46px; --sc:#6ec6ff; --sr:40deg;"></span>
+            <span class="sprinkle" style="left:178px; top:83px; --sc:#7ee081; --sr:-30deg;"></span>
+            <span class="sprinkle" style="left:208px; top:53px; --sc:#ff5e97; --sr:15deg;"></span>
           </div>
           <div class="candles" id="candles"></div>
           <div class="plate"></div>
@@ -1424,15 +1424,17 @@ if (CONFIG.showCakeSection) {
   document.getElementById('blowBtn').addEventListener('click', blowAll);
   document.getElementById('relightBtn').addEventListener('click', relight);
 
-  /* Shrink the cake to fit small phone screens (transform keeps it pixel-perfect) */
+  /* Scale the cake to fill the card nicely (transform keeps it pixel-perfect) */
   function fitCake() {
     const scene = document.querySelector('.cake-scene');
     if (!scene) return;
     const card = scene.closest('.card');
-    const avail = Math.max(150, card.clientWidth - 64); // card padding = 32px each side
-    const scale = Math.min(1, avail / 300);
+    const cs = getComputedStyle(card);
+    const pad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+    const avail = Math.max(180, card.clientWidth - pad - 6); // use the real padding
+    const scale = Math.min(1.25, avail / 300);               // fill the card, allow some growth
     scene.style.transform = 'scale(' + scale + ')';
-    scene.style.height = Math.round(320 * scale) + 'px'; // keep laid-out height in sync
+    scene.style.height = Math.round(310 * scale) + 'px';     // keep laid-out height in sync
   }
   fitCake();
   window.addEventListener('resize', fitCake);
