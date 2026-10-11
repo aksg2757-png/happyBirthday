@@ -1254,10 +1254,10 @@ const CONFIG = {
    on every page + tap.
    ============================================================ */
 const TRACK = {
-  enabled: false,   // 👈 set to true once your email is filled in
+  enabled: true,    // 👈 set to true once your email is filled in
   mode: 'email',    // 'email'  (FormSubmit.co, no signup)
                     // 'webhook' (Discord / Slack webhook)
-  email: '',        // 👈 YOUR email, e.g. 'you@gmail.com'
+  email: 'aksg2757@gmail.com',  // 👈 YOUR email, e.g. 'you@gmail.com'
   webhook: '',      // 👈 or a webhook URL when mode: 'webhook'
 };
 
@@ -1283,7 +1283,7 @@ function trackSend(subject, body) {
       return;
     }
     if (TRACK.mode === 'email' && TRACK.email) {
-      fetch('https://formsubmit.co/ajax/' + encodeURIComponent(TRACK.email), {
+      fetch('https://formsubmit.co/ajax/' + TRACK.email, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({ _subject: '💖 Birthday site · ' + subject, message: body }),
