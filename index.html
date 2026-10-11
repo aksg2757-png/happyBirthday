@@ -527,6 +527,10 @@
     gap: 18px;
   }
 
+  /* one gift per page */
+  .gift-solo { display: flex; justify-content: center; }
+  .gift-solo .gift-card { width: 300px; max-width: 100%; }
+
   .gift-card {
     position: relative;
     background: #fff;
@@ -1121,14 +1125,13 @@
       </div>
     </section>
 
-    <!-- ================= GIFTS ================= -->
+    <!-- ================= GIFT 1 ================= -->
     <section class="reveal step" id="giftsSection">
-      <div class="card wide">
+      <div class="card">
         <h2 class="cake-title">Gift Surprises! 🎁</h2>
-        <p class="cake-sub">Tap a gift to open it — there's a surprise inside 🥳</p>
+        <p class="cake-sub">Tap the gift to open it — 1 of 3 🥳</p>
 
-        <div class="gift-grid">
-
+        <div class="gift-solo">
           <div class="gift-card" data-gif="happy.gif" style="--gift:#ff8fb1; --ribbon:#ffffff;" role="button" tabindex="0" aria-label="Open gift 1: how happy I am for you">
             <div class="gift-box">
               <div class="gift-lid"><span class="gift-bow"><i class="knot"></i></span></div>
@@ -1137,7 +1140,17 @@
             <div class="gift-reveal" role="img" aria-label="animated surprise"></div>
             <p class="gift-caption">Here's how happy I am for you today 🥳</p>
           </div>
+        </div>
+      </div>
+    </section>
 
+    <!-- ================= GIFT 2 ================= -->
+    <section class="reveal step" id="giftsSection2">
+      <div class="card">
+        <h2 class="cake-title">Another surprise! 🎁</h2>
+        <p class="cake-sub">Tap this one to open it — 2 of 3 🥳</p>
+
+        <div class="gift-solo">
           <div class="gift-card" data-gif="genius.gif" style="--gift:#6ec6ff; --ribbon:#ffffff;" role="button" tabindex="0" aria-label="Open gift 2: one word to describe you">
             <div class="gift-box">
               <div class="gift-lid"><span class="gift-bow"><i class="knot"></i></span></div>
@@ -1146,7 +1159,17 @@
             <div class="gift-reveal" role="img" aria-label="animated surprise"></div>
             <p class="gift-caption">If I had to describe you with ONE word 👇</p>
           </div>
+        </div>
+      </div>
+    </section>
 
+    <!-- ================= GIFT 3 ================= -->
+    <section class="reveal step" id="giftsSection3">
+      <div class="card">
+        <h2 class="cake-title">One last gift! 🎁</h2>
+        <p class="cake-sub">Tap the last one to open it — 3 of 3 🥳</p>
+
+        <div class="gift-solo">
           <div class="gift-card" data-gif="cheers.gif" style="--gift:#7ee081; --ribbon:#ffffff;" role="button" tabindex="0" aria-label="Open gift 3: this one is for you">
             <div class="gift-box">
               <div class="gift-lid"><span class="gift-bow"><i class="knot"></i></span></div>
@@ -1155,7 +1178,6 @@
             <div class="gift-reveal" role="img" aria-label="animated surprise"></div>
             <p class="gift-caption">This one's for you, my friend 🥂</p>
           </div>
-
         </div>
       </div>
     </section>
@@ -1219,13 +1241,97 @@ const CONFIG = {
 };
 
 /* ============================================================
+   📬 TRACKING — email yourself how far she got & what she did
+   ------------------------------------------------------------
+   SETUP (2 minutes):
+     1) Put YOUR email in TRACK.email and set enabled: true
+     2) Open the site once yourself, then look in your inbox for
+        a FormSubmit "Activate" link and click it. (Until you do,
+        FormSubmit won't deliver.) That's it.
+   Prefer a chat app? Set mode: 'webhook' and paste a Discord /
+   Slack webhook URL in TRACK.webhook instead.
+   NOTE: turn this ON only for the real birthday send — it mails
+   on every page + tap.
+   ============================================================ */
+const TRACK = {
+  enabled: false,   // 👈 set to true once your email is filled in
+  mode: 'email',    // 'email'  (FormSubmit.co, no signup)
+                    // 'webhook' (Discord / Slack webhook)
+  email: '',        // 👈 YOUR email, e.g. 'you@gmail.com'
+  webhook: '',      // 👈 or a webhook URL when mode: 'webhook'
+};
+
+const SESSION = { start: new Date(), log: [] };
+let CURRENT_PAGE = { index: -1, name: 'the cover', actions: [] };
+let STEP_TOTAL = 0;
+const STEP_NAMES = {
+  hero: 'Home', cakeSection: 'Cake & candles', messageSection: 'Your note',
+  giftsSection: 'Gift 1', giftsSection2: 'Gift 2', giftsSection3: 'Gift 3',
+  quizSection: 'The question',
+};
+
+function trackSend(subject, body) {
+  if (!TRACK.enabled) return;
+  try {
+    if (TRACK.mode === 'webhook' && TRACK.webhook) {
+      fetch(TRACK.webhook, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: '💖 ' + subject + '\n' + body }),
+        keepalive: true,
+      }).catch(function () {});
+      return;
+    }
+    if (TRACK.mode === 'email' && TRACK.email) {
+      fetch('https://formsubmit.co/ajax/' + encodeURIComponent(TRACK.email), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ _subject: '💖 Birthday site · ' + subject, message: body }),
+        keepalive: true,
+      }).catch(function () {});
+    }
+  } catch (e) { /* tracking must never break the page */ }
+}
+
+function trackAction(action, detail) {
+  const rec = { t: new Date().toLocaleTimeString(), action: action, detail: detail || '' };
+  CURRENT_PAGE.actions.push(rec);
+  SESSION.log.push(rec);
+}
+
+/* one email per page — sent when she leaves that page */
+function pageReport(reason) {
+  if (!TRACK.enabled || CURRENT_PAGE.index < 0) return;
+  const lines = CURRENT_PAGE.actions.length
+    ? CURRENT_PAGE.actions.map(function (a) { return a.t + ' · ' + a.action + (a.detail ? ' — ' + a.detail : ''); }).join('\n')
+    : "(she didn't tap anything here)";
+  const tag = reason === 'leave' ? 'left the site' : reason === 'finale' ? 'finished 🎉' : 'moved on';
+  trackSend('Page ' + (CURRENT_PAGE.index + 1) + '/' + STEP_TOTAL + ' · ' + CURRENT_PAGE.name + ' (' + tag + ')', lines);
+  CURRENT_PAGE.actions = [];
+}
+
+function trackPage(index, name) {
+  pageReport('next');
+  CURRENT_PAGE = { index: index, name: name, actions: [] };
+  SESSION.log.push({ t: new Date().toLocaleTimeString(), action: 'reached ' + name });
+}
+
+function trackSummary() {
+  if (!TRACK.enabled) return;
+  const lines = SESSION.log.map(function (a) { return a.t + ' · ' + a.action + (a.detail ? ' — ' + a.detail : ''); }).join('\n');
+  trackSend('Full journey 🎂', 'Started ' + SESSION.start.toLocaleString() + '\n\n' + lines);
+}
+
+/* ============================================================
    FEATURE TOGGLES
    ============================================================ */
 if (!CONFIG.showBalloons) document.getElementById('balloonField').remove();
 if (!CONFIG.showConfetti) document.getElementById('confetti-canvas').remove();
 if (!CONFIG.showCakeSection) document.getElementById('cakeSection').remove();
 if (!CONFIG.showMessageSection) document.getElementById('messageSection').remove();
-if (!CONFIG.showGifts) document.getElementById('giftsSection').remove();
+if (!CONFIG.showGifts) ['giftsSection', 'giftsSection2', 'giftsSection3'].forEach(function (id) {
+  const el = document.getElementById(id); if (el) el.remove();
+});
 if (!CONFIG.showMascot) document.querySelectorAll('.mascot-wrap').forEach(el => el.remove());
 if (!CONFIG.showQuestions) document.getElementById('quizSection').remove();
 if (!CONFIG.music) document.getElementById('musicBtn').remove();
@@ -1446,16 +1552,19 @@ function blowOut(candle) {
   if (!candle.classList.contains('out')) {
     candle.classList.add('out');
     litCount--;
+    trackAction('blew out a candle');
     if (litCount <= 0) celebrate();
   }
 }
 
 function blowAll() {
+  trackAction('tapped "Blow them all"');
   const candles = [...document.querySelectorAll('.candle:not(.out)')];
   candles.forEach((c, i) => setTimeout(() => blowOut(c), i * 260));
 }
 
 function relight() {
+  trackAction('relit the candles');
   document.querySelectorAll('.candle').forEach(c => c.classList.remove('out'));
   litCount = CANDLE_COLORS.length;
   celebrated = false;
@@ -1494,6 +1603,7 @@ if (CONFIG.showGifts) {
     const gif = card.dataset.gif;
     // GIFs stream in progressively; the reveal div fades/zooms in via CSS
     if (reveal && gif) reveal.style.backgroundImage = "url('images/" + gif + "')";
+    trackAction('opened the gift', gif);
     const r = card.getBoundingClientRect();
     confettiBurst(r.left + r.width / 2, r.top + r.height / 2, 55);
   }
@@ -1597,6 +1707,7 @@ if (CONFIG.showQuestions && CONFIG.dodgeNoButton) {
     function dodge() {
       if (yesBtn.classList.contains('won')) return;
       tries++;
+      trackAction('tapped "NO" — it ran away', 'try ' + tries);
       yesBtn.style.transform = 'scale(' + (1 + tries * 0.45) + ')';
       const pad = 10;
       const maxX = dodgeCard.clientWidth - noBtn.offsetWidth - pad;
@@ -1619,8 +1730,11 @@ if (CONFIG.showQuestions && CONFIG.dodgeNoButton) {
       if (yesBtn.classList.contains('won')) return;
       yesBtn.classList.add('won');
       if (dodgeResult) dodgeResult.textContent = 'तो फिर चलो पूरा दिन पार्टी! 🥳🎉';
+      trackAction('tapped "YES" 💖');
       confettiBurst(null, null, 160);
       setTimeout(() => confettiBurst(null, null, 120), 400);
+      pageReport('finale');
+      trackSummary();
       setTimeout(showFinale, 900);   // → peach cat + "Happy Birthday" one more time 🎂
     });
   }
@@ -1638,6 +1752,7 @@ if (giftIntro) {
     if (introOpened) return;
     introOpened = true;
     giftIntro.classList.add('opening');
+    trackSend('Opened the cover 🎁', 'She tapped the gift box — the surprise has started!');
     // confetti bursts land as the overlay fades away
     setTimeout(() => confettiBurst(null, null, 110), 250);
     setTimeout(() => {
@@ -1681,6 +1796,7 @@ if (!IS_EXPIRED) {
   if (steps.length) {
     document.body.classList.add('stepper');
     if (stepNav) stepNav.classList.remove('hidden');
+    STEP_TOTAL = steps.length;
 
     const dots = steps.map(() => {
       const d = document.createElement('i');
@@ -1703,6 +1819,7 @@ if (!IS_EXPIRED) {
       dots.forEach((d, idx) => d.classList.toggle('on', idx === stepIndex));
       if (backBtn) backBtn.style.visibility = stepIndex === 0 ? 'hidden' : 'visible';
       if (nextBtn) nextBtn.classList.toggle('hidden', stepIndex === steps.length - 1);
+      trackPage(stepIndex, STEP_NAMES[steps[stepIndex].id] || ('Page ' + (stepIndex + 1)));
       window.scrollTo(0, 0);
     }
 
@@ -1748,6 +1865,14 @@ function showFinale() {
     if (window.__gotoStep) window.__gotoStep(0);
   });
 })();
+
+/* ============================================================
+   TRACKING HOOKS — link opened + leaving the site
+   ============================================================ */
+if (!IS_EXPIRED) {
+  trackSend('Link opened 👀', 'The birthday page was opened at ' + new Date().toLocaleString());
+}
+window.addEventListener('pagehide', function () { pageReport('leave'); });
 </script>
 </body>
 </html>
