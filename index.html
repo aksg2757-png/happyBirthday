@@ -863,37 +863,15 @@
     .intro-gift, .sparkle, .intro-hint { animation: none; }
   }
 
-  /* ============ EXPIRED / BYE SCREEN ============ */
-  #expiredScreen {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 24px;
-    background:
-      radial-gradient(circle at 18% 16%, rgba(255,255,255,.9), transparent 45%),
-      radial-gradient(circle at 84% 86%, rgba(255,255,255,.55), transparent 42%),
-      linear-gradient(160deg, #ffe6ef, #ffc9de 55%, #ffe6ef);
-  }
-  .expired-inner { max-width: 460px; }
-  .expired-emoji { font-size: clamp(3rem, 12vw, 4.5rem); animation: bob 2s ease-in-out infinite; }
-  .expired-title {
-    font-family: 'Pacifico', cursive;
-    font-size: clamp(1.9rem, 7vw, 2.9rem);
+  /* ============ "SORRY FOR BEING LATE" NOTE (cover) ============ */
+  .intro-late {
+    margin: 6px 0 0;
+    font-size: clamp(.95rem, 3.4vw, 1.1rem);
+    font-weight: 700;
     color: var(--pink-5);
-    margin: 16px 0 12px;
-    filter: drop-shadow(0 3px 10px rgba(232,67,126,.3));
+    letter-spacing: .3px;
   }
-  .expired-text {
-    font-size: clamp(1rem, 3.6vw, 1.15rem);
-    color: #a24a70;
-    font-weight: 500;
-    line-height: 1.75;
-  }
-  .expired-date { font-weight: 700; color: var(--pink-5); }
+  .tagline-late { display: inline-block; margin-top: 6px; font-weight: 700; color: var(--pink-5); }
 
   /* ============ STEP NAV (next / back pill) ============ */
   #stepNav {
@@ -1033,6 +1011,7 @@
     <div class="intro-inner">
       <p class="intro-eyebrow">a little something for you…</p>
       <h2 class="intro-title">For Anjali 🎀</h2>
+      <p class="intro-late">sorry for being late 🥺</p>
       <div class="intro-gift">
         <span class="sparkle s1">✨</span>
         <span class="sparkle s2">🎀</span>
@@ -1047,15 +1026,6 @@
   </div>
   <noscript><style>#giftIntro{display:none !important;}</style></noscript>
 
-  <!-- ================= EXPIRED SCREEN (after the birthday) ================= -->
-  <div id="expiredScreen" class="hidden" role="alert">
-    <div class="expired-inner">
-      <div class="expired-emoji">🎂</div>
-      <h2 class="expired-title">Comeback next year, Bye 👋</h2>
-      <p class="expired-text">This little surprise only worked on Anjali's birthday — <span class="expired-date">…</span> 🎈<br>The magic is gone… for now 😉</p>
-    </div>
-  </div>
-
   <div class="balloon-field" id="balloonField"></div>
   <canvas id="confetti-canvas"></canvas>
 
@@ -1066,7 +1036,7 @@
       <div class="hearts" id="heartField"></div>
       <h1>Happy Birthday</h1>
       <div class="name">Anjali</div> <!-- ✏️ edit the name here if needed -->
-      <p class="tagline">Wishing you the sweetest, sparkliest day ever 🎈🎀</p>
+      <p class="tagline">Wishing you the sweetest, sparkliest day ever 🎈🎀<br><span class="tagline-late">…and sorry for being a little late 🥺</span></p>
       <div class="mascot-wrap" id="mascotHeroWrap">
         <div class="bubble" id="bubbleHero">Hi Anjali! It's your big day! 🎂</div>
         <!-- 🐱 peach cat birthday GIF (home-screen mascot) -->
@@ -1228,7 +1198,7 @@
    ============================================================ */
 const CONFIG = {
   name: 'Anjali',            // ✏️ the birthday girl's name
-  birthdayDate: '2026-10-11', // 🎂 "today only": before/after this day the site shows a bye screen
+  birthdayDate: '2026-10-11', // 🎂 kept for reference — the date gate is OFF, so it opens any day
   showBalloons: true,        // floating balloons background
   showConfetti: true,        // falling confetti + bursts
   showCakeSection: true,     // interactive cake with candles
@@ -1337,28 +1307,10 @@ if (!CONFIG.showQuestions) document.getElementById('quizSection').remove();
 if (!CONFIG.music) document.getElementById('musicBtn').remove();
 
 /* ============================================================
-   🎂 "TODAY ONLY" — before/after the birthday show the bye screen
+   🎂 DATE GATE — removed. The site is made for 11 Oct, but it
+   now opens on ANY day (so it can be sent a little late).
    ============================================================ */
-function localDateStr(d) {
-  const pad = n => String(n).padStart(2, '0');
-  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-}
-const IS_EXPIRED = localDateStr(new Date()) !== CONFIG.birthdayDate;
-const expiredScreen = document.getElementById('expiredScreen');
-if (expiredScreen) {
-  if (IS_EXPIRED) {
-    expiredScreen.classList.remove('hidden');
-    const dateBadge = expiredScreen.querySelector('.expired-date');
-    if (dateBadge) dateBadge.textContent = CONFIG.birthdayDate;
-    document.body.classList.add('intro-open');   // lock scroll on the bye screen
-    const intro = document.getElementById('giftIntro');
-    if (intro) intro.remove();                   // skip the gift intro
-    const mBtn = document.getElementById('musicBtn');
-    if (mBtn) mBtn.remove();                     // no music today
-  } else {
-    expiredScreen.remove();
-  }
-}
+const IS_EXPIRED = false;
 
 document.title = 'Happy Birthday ' + CONFIG.name + ' 🎂';
 
